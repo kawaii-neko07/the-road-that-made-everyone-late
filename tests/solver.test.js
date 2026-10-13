@@ -1,0 +1,5 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {solve,network} from '../dist/solver.js';
+const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-6,`${a} ≠ ${b}`);
+test('Classic paradox: removing a road saves 15 minutes',()=>{near(solve(4000,false).average,65);near(solve(4000,true).average,80);near(solve(4000,true,network(),true).average,64.6875);});
+test('Wardrop, conservation and social objective across parameter space',()=>{for(const n of [0,100,1000,4000,4500,6000,10000])for(const a of [.002,.01,.02])for(const b of [10,45,70])for(const k of [0,5,30])for(const open of [false,true]){const edges=network(a,b,k),w=solve(n,open,edges),s=solve(n,open,edges,true);near(w.routeFlows.reduce((x,y)=>x+y,0),n);near(s.routeFlows.reduce((x,y)=>x+y,0),n);assert.ok(w.gap<1e-6);assert.ok(s.total<=w.total+1e-5);assert.ok(w.flows.every(f=>f>=0));const without=solve(n,false,edges,true);if(open)assert.ok(s.total<=without.total+1e-5);}});
+test('All constant costs and zero-cost degenerate graph',()=>{near(solve(4000,true,network(0,45,0)).average,0);near(solve(4000,true,network(0,0,0)).average,0);});

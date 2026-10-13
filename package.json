@@ -1,0 +1,1 @@
+{"name":"the-road-that-made-everyone-late","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test","start":"python3 -m http.server 8080 --directory dist"}}
